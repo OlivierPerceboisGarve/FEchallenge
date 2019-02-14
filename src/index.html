@@ -10,5 +10,11 @@
 </head>
 <body>
   <app-root></app-root>
+  <script src="https://unpkg.com/rxjs@6/bundles/rxjs.umd.min.js"></script>
+  <script src="https://unpkg.com/rxjs-devtools@0/bundles/rxjs-devtools.umd.min.js"></script>
+  <script>
+  const { patch } = rxjsDevTools;
+  const patcher = patch();
+  </script> 
 </body>
 </html>

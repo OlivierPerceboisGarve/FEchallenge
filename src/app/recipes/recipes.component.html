@@ -1,0 +1,17 @@
+<h1>Recipes</h1>
+current page : {{currentPage}}
+<ul *ngFor="let recipe of recipes">
+  <li>
+    <h2>{{recipe.title}}</h2>
+    <p>{{recipe.description}}</p>
+    <button>Delete</button>
+  </li>
+</ul>
+{{recipes?.length}}
+<app-pagination
+  [totalCount]="recipes$?.length"
+  [itemsPerPage]="itemsPerPage"
+  (goToNextPage)="loadNextPage()"
+  (goToPreviousPage)="loadPrevPage()"
+></app-pagination>
+current page : {{currentPage}}
