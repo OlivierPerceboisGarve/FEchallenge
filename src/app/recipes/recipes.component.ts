@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core'; 
 import { Subject } from 'rxjs';
-import { takeUntil } from 'rxjs/operators';
+import { filter, map, takeUntil, distinctUntilChanged } from 'rxjs/operators';
 import { Router, ActivatedRoute } from '@angular/router';
 
 import { RecipeService } from '../recipe.service';
@@ -20,36 +20,29 @@ export class RecipesComponent implements OnInit {
   constructor(private recipeService: RecipeService, private router: Router, private activatedRoute: ActivatedRoute ) { }
 
   getRecipes(page = this.currentPage, pageSize = this.itemsPerPage):void {
-    console.log('grr', page, pageSize);
     this.recipeService.getRecipes(page, pageSize)
       .pipe(takeUntil(this.unsubscribe$))
       .subscribe( (recipes) => {
-        console.log('got recipes in component', recipes);
         this.recipes = recipes['recipes'];
-        this.currentPage = recipes['currentPage'];
+        this.currentPage = Number(recipes['currentPage']);
       });
   }
   loadPrevPage(){
-    console.log('r prev', this.currentPage);
-    //this.getRecipes(this.currentPage-1, this.itemsPerPage);
     this.router.navigate(['recipes/page/'+(this.currentPage-1) ]);
   }
   loadNextPage(){
-    console.log('r next', this.currentPage, this.currentPage+1);
-    this.getRecipes(this.currentPage+1, this.itemsPerPage);
     this.router.navigate(['recipes/page/'+(this.currentPage+1) ]);
   }
 
   ngOnInit():void {
-    //console.log('ngOnInit activatedRoute.snapshot', this.activatedRoute.snapshot);
-    this.activatedRoute.params
-      .subscribe(params => {
-        console.log('this.activatedRoute.params', params );
-        if (params['id']){
-          console.log('this.activatedRoute.params HAS PARAM', params );
-          this.currentPage = params['id'];
+    this.activatedRoute.params.pipe(
+        filter(params => 'pageId' in params),
+        map(params => params.pageId),
+        distinctUntilChanged(),
+        takeUntil(this.unsubscribe$)
+      ).subscribe(pageId => {
+          this.currentPage = Number(pageId);
           this.getRecipes(this.currentPage);
-        } 
       });
     
   }
