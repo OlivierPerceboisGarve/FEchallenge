@@ -9,6 +9,8 @@ export class PaginationComponent implements OnInit {
 
   @Input() totalCount: number;
   @Input() itemsPerPage: number;
+  @Input() totalPages: number;
+  @Input() currentPage: number;
 
   @Output() goToPreviousPage = new EventEmitter<boolean>();
   @Output() goToNextPage = new EventEmitter<boolean>();

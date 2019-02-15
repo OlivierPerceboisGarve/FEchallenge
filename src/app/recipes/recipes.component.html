@@ -11,6 +11,8 @@ current page : {{currentPage}}
 <app-pagination
   [totalCount]="recipes$?.length"
   [itemsPerPage]="itemsPerPage"
+  [totalPages]="totalPages"
+  [currentPage]="currentPage"
   (goToNextPage)="loadNextPage()"
   (goToPreviousPage)="loadPrevPage()"
 ></app-pagination>

@@ -15,6 +15,7 @@ export class RecipesComponent implements OnInit {
 
   itemsPerPage: number = 5;
   currentPage: number = 1;
+  totalPages: number;
   private unsubscribe$ = new Subject();
 
   constructor(private recipeService: RecipeService, private router: Router, private activatedRoute: ActivatedRoute ) { }
@@ -25,6 +26,7 @@ export class RecipesComponent implements OnInit {
       .subscribe( (recipes) => {
         this.recipes = recipes['recipes'];
         this.currentPage = Number(recipes['currentPage']);
+        this.totalPages = Number(recipes['totalPages']);
       });
   }
   loadPrevPage(){
