@@ -12,7 +12,7 @@ current page : {{currentPage}}
   [totalCount]="recipes$?.length"
   [itemsPerPage]="itemsPerPage"
   [totalPages]="totalPages"
-  [currentPage]="currentPage"
+  [currentPage]="currentPage$"
   (goToNextPage)="loadNextPage()"
   (goToPreviousPage)="loadPrevPage()"
 ></app-pagination>

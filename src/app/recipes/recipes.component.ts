@@ -1,7 +1,10 @@
 import { Component, OnInit } from '@angular/core'; 
-import { Subject } from 'rxjs';
+import { Subject, Observable } from 'rxjs';
 import { filter, map, takeUntil, distinctUntilChanged } from 'rxjs/operators';
 import { Router, ActivatedRoute } from '@angular/router';
+import { Store, select } from '@ngrx/store';
+
+import { GoToPreviousPage, GoToNextPage } from './recipesPages.actions';
 
 import { RecipeService } from '../recipe.service';
 import { Recipe } from '../recipe';
@@ -16,12 +19,23 @@ export class RecipesComponent implements OnInit {
   itemsPerPage: number = 5;
   currentPage: number = 1;
   totalPages: number;
+  currentPage$: Observable<number>;
   private unsubscribe$ = new Subject();
 
-  constructor(private recipeService: RecipeService, private router: Router, private activatedRoute: ActivatedRoute ) { }
+  constructor(
+    private recipeService: RecipeService,
+    private router: Router,
+    private activatedRoute: ActivatedRoute,
+    private store: Store<{ currentPage: number }>
+  ) {
+    this.currentPage$ = store.pipe(select('currentPage'));
+    this.currentPage$.subscribe((currentPage) => {
+      this.getRecipes(currentPage);
+    });
+  }
 
-  getRecipes(page = this.currentPage, pageSize = this.itemsPerPage):void {
-    this.recipeService.getRecipes(page, pageSize)
+  getRecipes(page:number):void {
+    this.recipeService.getRecipes(page, this.itemsPerPage)
       .pipe(takeUntil(this.unsubscribe$))
       .subscribe( (recipes) => {
         this.recipes = recipes['recipes'];
@@ -29,11 +43,16 @@ export class RecipesComponent implements OnInit {
         this.totalPages = Number(recipes['totalPages']);
       });
   }
+  
   loadPrevPage(){
-    this.router.navigate(['recipes/page/'+(this.currentPage-1) ]);
+    console.log('prev');
+    this.store.dispatch(new GoToPreviousPage())
+    //this.router.navigate(['recipes/page/'+(this.currentPage-1) ]);
   }
   loadNextPage(){
-    this.router.navigate(['recipes/page/'+(this.currentPage+1) ]);
+    console.log('next');
+    this.store.dispatch(new GoToNextPage());
+    //this.router.navigate(['recipes/page/'+(this.currentPage+1) ]);
   }
 
   ngOnInit():void {
@@ -43,16 +62,13 @@ export class RecipesComponent implements OnInit {
         distinctUntilChanged(),
         takeUntil(this.unsubscribe$)
       ).subscribe(pageId => {
-          this.currentPage = Number(pageId);
-          this.getRecipes(this.currentPage);
+        this.currentPage = Number(pageId);
+        this.getRecipes(this.currentPage);
       });
-    
   }
 
   ngOnDestroy() {
     this.unsubscribe$.next();
     this.unsubscribe$.complete();
   }
-
 }
-
