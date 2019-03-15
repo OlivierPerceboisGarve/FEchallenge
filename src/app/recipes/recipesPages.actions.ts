@@ -12,3 +12,5 @@ export class GoToNextPage implements Action {
 export class GoToPreviousPage implements Action {
   readonly type = ActionTypes.GoToPreviousPage;
 }
+
+

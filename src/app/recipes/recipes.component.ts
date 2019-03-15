@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core'; 
 import { Subject, Observable } from 'rxjs';
-import { filter, map, takeUntil, distinctUntilChanged } from 'rxjs/operators';
+import { filter, map, skip, takeUntil, distinctUntilChanged } from 'rxjs/operators';
 import { Router, ActivatedRoute } from '@angular/router';
-import { Store, select } from '@ngrx/store';
+import { Store, select  } from '@ngrx/store';//
 
 import { GoToPreviousPage, GoToNextPage } from './recipesPages.actions';
 
@@ -29,7 +29,7 @@ export class RecipesComponent implements OnInit {
     private store: Store<{ currentPage: number }>
   ) {
     this.currentPage$ = store.pipe(select('currentPage'));
-    this.currentPage$.subscribe((currentPage) => {
+    this.currentPage$.pipe(skip(1)).subscribe((currentPage) => {
       this.getRecipes(currentPage);
     });
   }
@@ -45,12 +45,10 @@ export class RecipesComponent implements OnInit {
   }
   
   loadPrevPage(){
-    console.log('prev');
     this.store.dispatch(new GoToPreviousPage())
     //this.router.navigate(['recipes/page/'+(this.currentPage-1) ]);
   }
   loadNextPage(){
-    console.log('next');
     this.store.dispatch(new GoToNextPage());
     //this.router.navigate(['recipes/page/'+(this.currentPage+1) ]);
   }

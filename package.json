@@ -20,10 +20,13 @@
     "@angular/platform-browser": "^7.2.5",
     "@angular/platform-browser-dynamic": "^7.2.5",
     "@angular/router": "^7.2.5",
+    "@ngrx/effects": "^7.2.0",
     "@ngrx/store": "^7.2.0",
+    "@reibo/ngrx-mock-test": "0.0.8",
     "core-js": "^2.5.4",
     "ngrx": "^2.0.1",
     "rxjs": "~6.4.0",
+    "rxjs-marbles": "^5.0.0",
     "tslib": "^1.9.0",
     "zone.js": "~0.8.26"
   },

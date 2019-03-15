@@ -5,11 +5,13 @@ totalCount: {{totalCount}}
 <br>
 itemsPerPage: {{itemsPerPage}}
 <br>
-<button 
+<button
+    class="previous"
     (click)="previousPage()"
     [disabled]="currentPage === 1"
 >previous</button>
-<button 
+<button
+    class="next"
     (click)="nextPage()"
     [disabled]="currentPage === totalPages"
 >next</button>
