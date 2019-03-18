@@ -8,12 +8,14 @@ current page : {{currentPage}}
   </li>
 </ul>
 {{recipes?.length}}
+<br>----------------------<br>
 <app-pagination
-  [totalCount]="recipes$?.length"
+  [totalCount]="recipes?.length"
   [itemsPerPage]="itemsPerPage"
   [totalPages]="totalPages"
-  [currentPage]="currentPage$"
+  [currentPage]="currentPage"
   (goToNextPage)="loadNextPage()"
   (goToPreviousPage)="loadPrevPage()"
 ></app-pagination>
+<br>--------------<br>
 current page : {{currentPage}}

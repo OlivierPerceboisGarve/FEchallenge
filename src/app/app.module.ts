@@ -5,11 +5,14 @@ import { AppComponent } from './app.component';
 import { AppRoutingModule } from './app-routing.module';
 import { HttpClientModule } from '@angular/common/http';
 
+import { EffectsModule } from '@ngrx/effects';
 import { StoreModule } from '@ngrx/store';
-import { recipesPagesReducer } from './recipes/recipes.reducer';
+import { recipesReducer } from './recipes/recipes.reducer';
 
 import { RecipesComponent } from './recipes/recipes.component';
 import { PaginationComponent } from './pagination/pagination.component';
+
+import { RecipesEffects } from './recipes/recipes.effects';
 
 
 @NgModule({
@@ -22,7 +25,8 @@ import { PaginationComponent } from './pagination/pagination.component';
     BrowserModule,
     AppRoutingModule,
     HttpClientModule,
-    StoreModule.forRoot({ currentPage: recipesPagesReducer })
+    StoreModule.forRoot({ recipes: recipesReducer }),
+    EffectsModule.forRoot([RecipesEffects])
   ],
   providers: [],
   bootstrap: [AppComponent]
