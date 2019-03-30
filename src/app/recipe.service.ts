@@ -15,6 +15,7 @@ export class RecipeService {
   constructor(private http: HttpClient) { }
  
   getRecipes (page:number = 1, pageSize:number = 5): Observable<Recipe[]> {
+    console.log('service getRecipes page:', page, ' pageSize', pageSize);
     const params = { params: new HttpParams().set('page', page.toString()).set('pageSize', pageSize.toString()) };
     return this.http.get<Recipe[]>(this.recipesUrl, params );
   }

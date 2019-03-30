@@ -27,7 +27,9 @@ export class RecipesEffects {
         private store$: Store<State>,
         private recipeService: RecipeService,
         private router: Router
-        ){}
+        ){
+            console.log('EFFECTS');
+        }
 
     @Effect()
     goToPreviousPage$ = this.actions$.pipe(
@@ -55,9 +57,11 @@ export class RecipesEffects {
             ofType(ActionTypes.LoadPage),
             withLatestFrom(this.store$.pipe(select('recipes'))),
             switchMap(([action, storeState ]:[State, State]) => {
+                console.log('effect loadpage page:', action.page, ' itemsPerPage: ', storeState.itemsPerPage);
                 return this.recipeService.getRecipes(action.page, storeState.itemsPerPage).pipe(
                     map((recipes: Recipe[]) => new LoadPageSuccess(recipes, action.page)),
-                    catchError(error => of(new LoadPageFail(error)))
+                    catchError(error => of(new LoadPageFail(error))),
+                    tap((_) => console.log('tap after getRecipes in effect'))
                 );
             })
     );
@@ -67,6 +71,7 @@ export class RecipesEffects {
             ofType(ActionTypes.LoadPageSuccess),
             withLatestFrom(this.store$.pipe(select('recipes'))),
             tap(([action, storeState ] ) => {
+                console.log('effect loadPageSuccess');
                 this.router.navigate(['recipes/page/'+(storeState.page) ]);
             })
 

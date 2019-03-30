@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core'; 
 import { Subject, Observable } from 'rxjs';
-import { filter, map, skip, takeUntil, distinctUntilChanged } from 'rxjs/operators';
+import { filter, map, tap, skip, takeUntil, distinctUntilChanged } from 'rxjs/operators';
 import { Router, ActivatedRoute } from '@angular/router';
 import { Store, select  } from '@ngrx/store';//
 
@@ -29,7 +29,7 @@ export class RecipesComponent implements OnInit {
     private recipeService: RecipeService,
     private router: Router,
     private activatedRoute: ActivatedRoute,
-    private store: Store<State>
+    public store: Store<State>
   ) {}
  
   loadPrevPage(){
@@ -41,24 +41,32 @@ export class RecipesComponent implements OnInit {
 
   ngOnInit():void {
     this.currentPage$ = this.store.pipe(select('recipes'));
+    console.log('init1:');
 
     this.activatedRoute.params.pipe(
-        filter(params => 'pageId' in params),
-        map(params => params.pageId),
-        distinctUntilChanged(),
-        takeUntil(this.unsubscribe$)
-      ).subscribe(pageId => {
-        this.store.dispatch(new LoadPage(pageId, 5)); //this.itemsPerPage
-      });
+      filter(params => 'pageId' in params),
+      map(params => params.pageId),
+      //tap(console.log('init2')),
+      distinctUntilChanged(),
+      takeUntil(this.unsubscribe$)
+    ).subscribe(pageId => {
+      console.log('init 3:', pageId);
+      this.store.dispatch(new LoadPage(Number(pageId), 5)); //this.itemsPerPage
+    });
 
-      this.store.select(getAllRecipes).subscribe((recipes) => {
-        console.log('recipes', recipes);
-        if (recipes !== null) {//--> create own pipeable operator to filter notnull
-          this.recipes = recipes['recipes'];
-          this.currentPage = Number(recipes['currentPage']);
-          this.totalPages = Number(recipes['totalPages']);
-        };
-      });
+    //console.log('getAllRecipes', getAllRecipes);
+    this.currentPage$.subscribe((cp) =>{
+      console.log('cp$', cp);
+    });
+
+    this.store.select(getAllRecipes).subscribe((recipes) => {//.pipe(skip(1))
+      console.log('recipes', recipes);
+      if (recipes !== null) {//--> create own pipeable operator to filter notnull
+        this.recipes = recipes['recipes'];
+        this.currentPage = Number(recipes['currentPage']);
+        this.totalPages = Number(recipes['totalPages']);
+      };
+    });
   }
 
   ngOnDestroy() {
